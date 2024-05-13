@@ -49,7 +49,8 @@ def getContours(image):
     return biggest
 
 def reorder(points):
-    if points.size != 0:
+    # Check if points array is not empty
+    if points.size != 0 and points.shape == (4, 2):
         points = points.reshape((4, 2))
         new_points = np.zeros((4, 1, 2), np.int32)
         add = points.sum(1)
@@ -60,7 +61,7 @@ def reorder(points):
         new_points[2] = points[np.argmax(diff)]
         return new_points
     else:
-        return np.array([])
+        return points
 
 def warp(image, biggest, img_size, target_width=840, target_height=530):
     width_img = img_size[0]

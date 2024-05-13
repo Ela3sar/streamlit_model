@@ -49,29 +49,35 @@ def getContours(image):
     return biggest
 
 def reorder(points):
-    points = points.reshape((4, 2))
-    new_points = np.zeros((4, 1, 2), np.int32)
-    add = points.sum(1)
-    new_points[0] = points[np.argmin(add)]
-    new_points[3] = points[np.argmax(add)]
-    diff = np.diff(points, axis=1)
-    new_points[1] = points[np.argmin(diff)]
-    new_points[2] = points[np.argmax(diff)]
-    return new_points
+    if points.size != 0:
+        points = points.reshape((4, 2))
+        new_points = np.zeros((4, 1, 2), np.int32)
+        add = points.sum(1)
+        new_points[0] = points[np.argmin(add)]
+        new_points[3] = points[np.argmax(add)]
+        diff = np.diff(points, axis=1)
+        new_points[1] = points[np.argmin(diff)]
+        new_points[2] = points[np.argmax(diff)]
+        return new_points
+    else:
+        return np.array([])
 
 def warp(image, biggest, img_size, target_width=840, target_height=530):
     width_img = img_size[0]
     height_img = img_size[1]
     biggest = reorder(biggest)
-    pts1 = np.float32(biggest)
-    pts2 = np.float32(([0, 0], [width_img, 0], [0, height_img], [width_img, height_img]))
-    matrix = cv2.getPerspectiveTransform(pts1, pts2)
-    img_output = cv2.warpPerspective(image, matrix, (width_img, height_img))
-    img_cropped = img_output[20:img_output.shape[0] - 20, 20:img_output.shape[1] - 20]
-    
-    img_resized = cv2.resize(img_cropped, (target_width, target_height))
-    
-    return img_resized
+    if biggest.size != 0:
+        pts1 = np.float32(biggest)
+        pts2 = np.float32(([0, 0], [width_img, 0], [0, height_img], [width_img, height_img]))
+        matrix = cv2.getPerspectiveTransform(pts1, pts2)
+        img_output = cv2.warpPerspective(image, matrix, (width_img, height_img))
+        img_cropped = img_output[20:img_output.shape[0] - 20, 20:img_output.shape[1] - 20]
+        
+        img_resized = cv2.resize(img_cropped, (target_width, target_height))
+        
+        return img_resized
+    else:
+        return image
 
 st.title('Text recognition application for ID cards')
 

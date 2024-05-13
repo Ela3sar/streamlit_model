@@ -66,8 +66,8 @@ def reorder(points):
 def warp(image, biggest, img_size, target_width=840, target_height=530):
     width_img = img_size[0]
     height_img = img_size[1]
-    biggest = reorder(biggest)
     if biggest.size != 0:
+        biggest = reorder(biggest)
         pts1 = np.float32(biggest)
         pts2 = np.float32(([0, 0], [width_img, 0], [0, height_img], [width_img, height_img]))
         matrix = cv2.getPerspectiveTransform(pts1, pts2)

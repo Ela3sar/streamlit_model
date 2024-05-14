@@ -2,11 +2,38 @@ import streamlit as st
 import cv2
 import numpy as np
 import easyocr
-import json
 
-# تحميل محتوى ملف ال JSON
-with open('endpoints.json', 'r') as f:
-    endpoints_data = json.load(f)
+# تضمين هيكل JSON مباشرة داخل المتغير
+endpoints_data = {
+    "endpoints": {
+        "/detect_text": {
+            "method": "POST",
+            "description": "Upload an image of the ID card and detect text in it",
+            "parameters": {
+                "image": {
+                    "type": "file",
+                    "description": "Image file of the ID card to be uploaded"
+                }
+            },
+            "response": {
+                "success": {
+                    "status": 200,
+                    "content": {
+                        "message": "success",
+                        "factory_number": "Accepted_text"
+                    }
+                },
+                "error": {
+                    "status": 400,
+                    "content": {
+                        "message": "error",
+                        "error": "No valid factory number detected"
+                    }
+                }
+            }
+        }
+    }
+}
 
 def word_detect(img):
     gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)

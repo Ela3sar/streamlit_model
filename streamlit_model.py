@@ -95,7 +95,7 @@ def main():
         image = np.array(bytearray(uploaded_file.read()), dtype=np.uint8)
         img = cv2.imdecode(image, cv2.IMREAD_COLOR)
 
-        condition, accepted_text = detect_text(img)
+        condition, accepted_text = word_detect(img)
 
         if condition:
             st.json(endpoints_data['success'])

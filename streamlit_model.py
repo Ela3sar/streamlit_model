@@ -84,7 +84,7 @@ def main():
 
     # عرض عناوين الـ endpoints
     st.header("Endpoints:")
-    for endpoint, description in endpoints_data.items():
+    for endpoint, description in endpoints_data['endpoints'].items():
         st.subheader(endpoint)
         st.write(description)
         st.write("---")
@@ -98,9 +98,9 @@ def main():
         condition, accepted_text = word_detect(img)
 
         if condition:
-            st.json(endpoints_data['success'])
+            st.json(endpoints_data['endpoints']['/detect_text']['response']['success'])
         else:
-            st.json(endpoints_data['error'])
+            st.json(endpoints_data['endpoints']['/detect_text']['response']['error'])
     else:
         st.error("No image uploaded")
 

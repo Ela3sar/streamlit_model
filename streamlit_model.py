@@ -1,9 +1,13 @@
+import streamlit as st
 import cv2
 import numpy as np
 import easyocr
-import streamlit as st
+import json
 
-# تعريف الدوال
+# تحميل محتوى ملف ال JSON
+with open('endpoints.json', 'r') as f:
+    endpoints_data = json.load(f)
+
 def word_detect(img):
     gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
     adaptive_threshold = cv2.adaptiveThreshold(gray, 255, cv2.ADAPTIVE_THRESH_GAUSSIAN_C, cv2.THRESH_BINARY, 85, 11)
@@ -74,15 +78,31 @@ def warp(image, biggest, img_size, target_width=840, target_height=530):
     
     return img_resized
 
-# تعريف التطبيق
-st.title('Text recognition application for ID cards')
+# واجهة Streamlit
+def main():
+    st.title("Text Detection App")
 
-uploaded_file = st.file_uploader("Upload a photo of your ID card", type=["jpg", "png"])
+    # عرض عناوين الـ endpoints
+    st.header("Endpoints:")
+    for endpoint, description in endpoints_data.items():
+        st.subheader(endpoint)
+        st.write(description)
+        st.write("---")
 
-if uploaded_file is not None:
-    image = cv2.imdecode(np.frombuffer(uploaded_file.read(), np.uint8), cv2.IMREAD_UNCHANGED)
-    condition, Accepted_text = word_detect(image)
-    if condition:
-        st.write("Factory number on the recognized ID card : ", Accepted_text)
+    uploaded_file = st.file_uploader("Upload Image", type=["jpg", "png"])
+
+    if uploaded_file is not None:
+        image = np.array(bytearray(uploaded_file.read()), dtype=np.uint8)
+        img = cv2.imdecode(image, cv2.IMREAD_COLOR)
+
+        condition, accepted_text = detect_text(img)
+
+        if condition:
+            st.json(endpoints_data['success'])
+        else:
+            st.json(endpoints_data['error'])
     else:
-        st.write("This is not a valid ID.")
+        st.error("No image uploaded")
+
+if __name__ == "__main__":
+    main()

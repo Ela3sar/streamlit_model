@@ -3,12 +3,45 @@ import streamlit as st
 def main():
     st.title("Text Detection App")
 
+    endpoints_data = {
+    "endpoints": {
+        "/detect_text": {
+            "method": "POST",
+            "description": "Upload an image of the ID card and detect text in it",
+            "parameters": {
+                "image": {
+                    "type": "file",
+                    "description": "Image file of the ID card to be uploaded"
+                }
+            },
+            "response": {
+                "success": {
+                    "status": 200,
+                    "content": {
+                        "message": "success",
+                        "factory_number": "Accepted_text"
+                    }
+                },
+                "error": {
+                    "status": 400,
+                    "content": {
+                        "message": "error",
+                        "error": "No valid factory number detected"
+                    }
+                }
+            }
+        }
+    }
+}
+
+
     # عرض عناوين الـ endpoints
     st.header("Endpoints:")
     for endpoint, description in endpoints_data['endpoints'].items():
         st.subheader(endpoint)
         st.write(description)
         st.write("---")
+
 
     # كتابة زرار HTML لتشغيل البرنامج بواسطة JavaScript
     st.write("""
@@ -20,38 +53,7 @@ def main():
         import numpy as np
         import easyocr
         
-        # تضمين هيكل JSON مباشرة داخل المتغير
-        endpoints_data = {
-            "endpoints": {
-                "/detect_text": {
-                    "method": "POST",
-                    "description": "Upload an image of the ID card and detect text in it",
-                    "parameters": {
-                        "image": {
-                            "type": "file",
-                            "description": "Image file of the ID card to be uploaded"
-                        }
-                    },
-                    "response": {
-                        "success": {
-                            "status": 200,
-                            "content": {
-                                "message": "success",
-                                "factory_number": "Accepted_text"
-                            }
-                        },
-                        "error": {
-                            "status": 400,
-                            "content": {
-                                "message": "error",
-                                "error": "No valid factory number detected"
-                            }
-                        }
-                    }
-                }
-            }
-        }
-        
+      
         def word_detect(img):
             gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
             adaptive_threshold = cv2.adaptiveThreshold(gray, 255, cv2.ADAPTIVE_THRESH_GAUSSIAN_C, cv2.THRESH_BINARY, 85, 11)

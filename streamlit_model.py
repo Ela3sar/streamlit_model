@@ -5,8 +5,8 @@ import easyocr
 import json
 
 # قراءة ملف JSON
-with open('endpoints_data.json', 'r') as file:
-    endpoints_data = json.load(file)
+#with open('endpoints_data.json', 'r') as file:
+  #  endpoints_data = json.load(file)
 
 def word_detect(img):
     gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
@@ -83,11 +83,11 @@ def main():
     st.title("Text Detection App")
 
     # عرض عناوين الـ endpoints
-    st.header("Endpoints:")
-    for endpoint, description in endpoints_data['endpoints'].items():
-        st.subheader(endpoint)
-        st.write(description)
-        st.write("---")
+    #st.header("Endpoints:")
+    #for endpoint, description in endpoints_data['endpoints'].items():
+      #  st.subheader(endpoint)
+   #     st.write(description)
+    #    st.write("---")
 
     uploaded_file = st.file_uploader("Upload Image", type=["jpg", "png"])
 
